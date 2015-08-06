@@ -1,12 +1,12 @@
 function init() {
   console.log("Set to go dude.")
-  var player1 = new Player();
-  player1.init();
-  var player2 = new Player();
-  player2.init();
-  var myBoard = new Board(3);
-  myBoard.init();
-  console.log(myBoard);
+
+  $('#start-game').on('click', function() {
+    var myGame = new TicTacToeGame();
+    myGame.init();
+    console.log(myGame);
+  });
+
 }
 
 
@@ -19,6 +19,12 @@ function Player() {
   this.mySymbol = "";
   this.wins = 0;
 }
+
+      Player.prototype.init = function init(playerId) {
+        this.myName = $(playerId + ' input').val();
+        this.myType = $(playerId + ' .player-type').val();
+        this.mySymbol = $(playerId + ' .player-symbol').val();
+      };
 
 
 
@@ -43,14 +49,25 @@ function Board(squareDepth) {
 
 // Game object constructor function and prototype
 
-function TicTacToeGame(board, player1, player2, goal) {
-  this.board = board;
-  this.player1 = player1;
-  this.player2 = player2;
-  this.goal = goal;
+function TicTacToeGame() {
+  this.board = {};
+  this.player1 = {};
+  this.player2 = {};
+  this.goal = 1;
+  this.gameCount = 1;
   this.whosTurn = 1;
-
 }
+
+TicTacToeGame.prototype.init = function init() {
+  this.board = new Board(3);
+  this.board.init();
+  this.player1 = new Player();
+  this.player1.init('#first-player');
+  this.player2 = new Player();
+  this.player2.init('#second-player');
+  var stringGoal = $('#num-times').val();
+  this.goal = parseInt(stringGoal);
+};
 
 
 

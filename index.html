@@ -10,22 +10,22 @@
     <main>
       <div id="controls-container">
         <form>
-          <div class="player">
+          <div id="first-player" class="player">
             <h2>Player 1 (First Move)</h2>
             <ul>
               <li>Name:
-                <input type="text" name="player-name" value="Player 1">
+                <input type="text" name="player-name" value="Sam">
               </li>
               <li>Player/Computer:
-                <select name="player-type">
+                <select class="player-type" name="player-type">
                   <option value="human">Human Player</option>
                   <option value="computer">Computer Player</option>
                 </select>
               </li>
               <li>Symbol:
-                <select name="symbol">
-                  <option value="x">X</option>
-                  <option value="o">O</option>
+                <select class="player-symbol" name="symbol">
+                  <option value="X">X</option>
+                  <option value="O">O</option>
                 </select>
               </li>
             </ul>
@@ -34,7 +34,7 @@
             <h1>TicTacToe</h1>
             <div id="play-count">
               <h3>Play to:</h3>
-              <select name="num-times">
+              <select id="num-times" name="num-times">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -47,24 +47,24 @@
                 <option value="10">10</option>
               </select>
             </div>
-            <button name="start-game">Start</button>
+            <button id="start-game" type="button" name="start-game">Start</button>
           </div>
-          <div class="player">
+          <div id="second-player" class="player">
             <h2>Player 2 (Second Move)</h2>
             <ul>
               <li>Name:
                 <input type="text" name="player-name" value="Player 2">
               </li>
               <li>Player/Computer:
-                <select name="player-type">
+                <select class="player-type" name="player-type">
                   <option value="computer">Computer Player</option>
                   <option value="human">Human Player</option>
                 </select>
               </li>
               <li>Symbol:
-                <select name="symbol">
-                  <option value="o">O</option>
-                  <option value="x">X</option>
+                <select class="player-symbol" name="symbol">
+                  <option value="O">O</option>
+                  <option value="X">X</option>
                 </select>
               </li>
             </ul>
