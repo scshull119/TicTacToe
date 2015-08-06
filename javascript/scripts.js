@@ -9,8 +9,6 @@ function init() {
 
 }
 
-
-
 // Player object constructor function and prototype
 
 function Player() {
@@ -25,9 +23,6 @@ function Player() {
         this.myType = $(playerId + ' .player-type').val();
         this.mySymbol = $(playerId + ' .player-symbol').val();
       };
-
-
-
 
 
 // Board object constructor function and prototype
@@ -54,11 +49,11 @@ function TicTacToeGame() {
   this.player1 = {};
   this.player2 = {};
   this.goal = 1;
-  this.gameCount = 1;
+  this.gameCount = 0;
   this.whosTurn = 1;
 }
 
-TicTacToeGame.prototype.init = function init() {
+TicTacToeGame.prototype.init = function init() {  // Creates and initializes all necessary child objects
   this.board = new Board(3);
   this.board.init();
   this.player1 = new Player();

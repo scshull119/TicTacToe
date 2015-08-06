@@ -6,15 +6,16 @@
     <link href='http://fonts.googleapis.com/css?family=Permanent+Marker|Oswald' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/styles.css" />
   </head>
+
   <body>
     <main>
       <div id="controls-container">
         <form>
-          <div id="first-player" class="player">
+          <div id="first-player" class="player-window">
             <h2>Player 1 (First Move)</h2>
             <ul>
               <li>Name:
-                <input type="text" name="player-name" value="Sam">
+                <input type="text" name="player-name" value="Player 1">
               </li>
               <li>Player/Computer:
                 <select class="player-type" name="player-type">
@@ -30,7 +31,7 @@
               </li>
             </ul>
           </div>
-          <div class="start-stop-button">
+          <div id="title-area">
             <h1>TicTacToe</h1>
             <div id="play-count">
               <h3>Play to:</h3>
@@ -49,7 +50,7 @@
             </div>
             <button id="start-game" type="button" name="start-game">Start</button>
           </div>
-          <div id="second-player" class="player">
+          <div id="second-player" class="player-window">
             <h2>Player 2 (Second Move)</h2>
             <ul>
               <li>Name:

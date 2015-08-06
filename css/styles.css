@@ -19,7 +19,7 @@ footer {
   margin-top: 5px;
 }
 
-.start-stop-button {
+#title-area {
   display: inline-block;
   width: 25%;
 }
@@ -30,7 +30,7 @@ footer {
   font-family: 'Oswald', sans-serif;
 }
 
-.start-stop-button button {
+#title-area button {
   margin: 2px 0 2px 0;
   background-color: lightgrey;
   width: 110px;
@@ -49,7 +49,7 @@ select {
   background-color: lightgrey;
 }
 
-.player {
+.player-window {
   background-color: #cc2020;
   border: 10px solid black;
   border-radius: 10px;
@@ -59,16 +59,16 @@ select {
   font-size: 12px;
 }
 
-.player h2 {
+.player-window h2 {
   color: #dddddd;
   font-size: 18px;
 }
 
-.player ul {
+.player-window ul {
   list-style-type: none;
 }
 
-.player li {
+.player-window li {
   padding: 2px 0 2px 0;
 }
 
