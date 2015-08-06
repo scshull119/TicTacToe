@@ -56,6 +56,7 @@ function TicTacToeGame() {
 TicTacToeGame.prototype.init = function init() {  // Creates and initializes all necessary child objects
   this.board = new Board(3);
   this.board.init();
+  this.board.drawGameBoard();
   this.player1 = new Player();
   this.player1.init('#first-player');
   this.player2 = new Player();
@@ -63,6 +64,81 @@ TicTacToeGame.prototype.init = function init() {  // Creates and initializes all
   var stringGoal = $('#num-times').val();
   this.goal = parseInt(stringGoal);
 };
+
+
+// ------------------------------------- View Controller Section -----------------------------------
+
+Board.prototype.drawGameBoard = function drawGameBoard() {
+
+  var gameSquare = $("<div>").attr("id", "game-square");  // Square div holding square TicTacToe table
+  var gameTable = $("<table>").attr("id", "game-table");   // Table object to function as gameboard outline
+  $(gameTable).append($("<tbody>"));    // tbody to hold generated rows/columns
+
+  // loop to generate row/column framework for table
+
+  for(var i = 1; i <= this.squareDepth; i++) {
+    var tRow = $("<tr>");
+    for(var j = 1; j <= this.squareDepth; j++) {
+      var tCell = $("<td>").attr("id", i + "-" + j);
+      $(tRow).append($(tCell));
+    }
+    $(gameTable).append($(tRow));
+  }
+
+  $(gameSquare).append($(gameTable));
+  $('#chalk-board').append($(gameSquare));
+
+};
+
+
+/*
+
+<div id="game-square">
+  <table id="game-table">
+    <tbody>
+      <tr>
+        <td>X</td>
+        <td>O</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>X</td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </body>
+  </table>
+</div>
+<div id="score-area">
+  <div id="player1" class="player-score">
+    <h3>Lichard DeGray:</h3>
+    <div class="tally upper">
+      1111
+    </div>
+    <div class="tally lower">
+      1111
+    </div>
+  </div>
+  <div id="player2" class="player-score">
+    <h3>Player 2:</h3>
+    <div class="tally upper">
+      1111
+    </div>
+    <div class="tally lower">
+      1111
+    </div>
+  </div>
+</div>
+
+
+
+*/
+
 
 
 
