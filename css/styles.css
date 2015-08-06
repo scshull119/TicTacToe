@@ -1,0 +1,176 @@
+body {
+  background-color: #003300;
+}
+
+h1 {
+  color: #dddddd;
+  text-align: center;
+  font-size: 48px;
+  font-family: 'Permanent Marker', cursive;
+}
+
+footer {
+  padding: 10px;
+  color: #dddddd;
+}
+
+#controls-container {
+  text-align: center;
+  margin-top: 5px;
+}
+
+.start-stop-button {
+  display: inline-block;
+  width: 25%;
+}
+
+#play-count h3 {
+  display: inline-block;
+  color: #dddddd;
+  font-family: 'Oswald', sans-serif;
+}
+
+.start-stop-button button {
+  margin: 2px 0 2px 0;
+  background-color: lightgrey;
+  width: 110px;
+  height: 40px;
+  font-size: 18px;
+  padding: 5px;
+  border-radius: 5px;
+  border: 3px solid black;
+}
+
+select {
+  background-color: lightgrey;
+}
+
+.player input {
+  background-color: lightgrey;
+}
+
+.player {
+  background-color: #cc2020;
+  border: 10px solid black;
+  border-radius: 10px;
+  display: inline-block;
+  width: 30%;
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+}
+
+.player h2 {
+  color: #dddddd;
+  font-size: 18px;
+}
+
+.player ul {
+  list-style-type: none;
+}
+
+.player li {
+  padding: 2px 0 2px 0;
+}
+
+#game-container {
+height: 600px;
+}
+
+#chalk-board {
+  position: relative;
+  width: 800px;
+  height: 500px;
+  background-color: black;
+  border: 40px solid tan;
+  border-radius: 40px;
+  margin: 15px auto auto auto;
+}
+
+#game-square {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  bottom: 20px;
+  left: 320px;
+  background-color: #dddddd;
+  overflow: hidden;
+
+}
+
+#game-table {
+  color: #dddddd;
+  margin: -2px;
+  table-layout: fixed;
+}
+
+#game-table td {
+  font-family: 'Permanent Marker', cursive;
+  font-size: 100px;
+  width: 150px;
+  height: 150px;
+  background-color: black;
+  text-align: center;
+}
+
+#score-area {
+  position: absolute;
+  top: 20px;
+  right:500px;
+  bottom: 20px;
+  left: 20px;
+  /*border: 1px solid white;*/
+}
+
+#player1 {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 230px;
+  left: 0;
+  /*border: 1px solid white;*/
+}
+
+#player2 {
+  position: absolute;
+  top: 230px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.player-score {
+  color: #dddddd;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 50px;
+
+}
+
+.player-score h3 {
+  font-size: 36px;
+}
+
+.upper {
+  position: absolute;
+  top: 60px;
+}
+
+.lower {
+  position: absolute;
+  top: 140px;
+}
+
+.tally {
+  left: 40px;
+  background-image: url('../sprite.png');
+  height: 70px;
+  width: 120px;
+  overflow: hidden;
+  font-size: 64px;
+  line-height: 64px;
+  text-align: center;
+}
+
+footer {
+  color: #dddddd;
+  text-align: center;
+}
