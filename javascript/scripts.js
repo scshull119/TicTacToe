@@ -1,6 +1,10 @@
 function init() {
   console.log("Set to go dude.")
 
+  populatePlayerWindow("player1");
+  populateTitleArea();
+  populatePlayerWindow("player2");
+
   $('#start-game').on('click', function() {
     var myGame = new TicTacToeGame();
     myGame.init();
@@ -27,18 +31,25 @@ function Player() {
 
 // Board object constructor function and prototype
 
-function Board(squareDepth) {
-  this.squareDepth = squareDepth;
+function Board() {
+  this.squareDepth = 3;
 }
       // Based on the desired number of squares on a side, creates properties
       // on the Board object to hold the values of each square.
       Board.prototype.init = function init() {
+        this.getSquareDepth();
         for(var i = 1; i <= this.squareDepth; i++) {
           for(var j = 1; j <= this.squareDepth; j++) {
             var varName = "row" + i + "col" + j;
             this[varName] = "";
           }
         }
+      };
+
+      // Function reads the user's selection of a board size, allowing 4x4 and 5x5 boards in addition to default 3x3.
+      Board.prototype.getSquareDepth = function getSquareDepth() {
+        var stringDepth = $("#board-size").val();
+        this.squareDepth = parseInt(stringDepth);
       };
 
 
@@ -69,6 +80,76 @@ TicTacToeGame.prototype.init = function init() {  // Creates and initializes all
 
 
 // ------------------------------------- View Controller Section -----------------------------------
+
+// Draws a player control menu.  For use when page is first loaded, and on each game restart.
+
+function populatePlayerWindow(playerId) {
+  if(playerId == "player1") {
+    var divId = "first-player";
+    var titleString = "Player 1 (First Move)";
+    var nameString = "Player 1";
+    var defaultSymbol = "X";
+    var altSymbol = "O";
+  } else if(playerId == "player2") {
+    var divId = "second-player";
+    var titleString = "Player 2 (Second Move)";
+    var nameString = "Player 2";
+    var defaultSymbol = "O";
+    var altSymbol = "X";
+  }
+
+  var playerWindowDiv = $("<div>").attr("id", divId).attr("class", "player-window");
+  $(playerWindowDiv).append($("<h2>").text(titleString));
+
+  var inputsList = $("<ul>");
+
+  var nameInput = $("<li>").text("Name: ").append($("<input>").attr("type", "text").attr("name", "player-name").attr("value", nameString));
+  var typeInput = $("<li>").text("Player/Computer: ").append($("<select>").attr("class", "player-type").attr("name", "player-type").append(
+    $("<option>").attr("value", "human").text("Human Player"), $("<option>").attr("value", "computer").text("Computer Player")
+  )  );
+  var symbolInput = $("<li>").text("Symbol: ").append($("<select>").attr("class", "player-symbol").attr("name", "symbol").append(
+    $("<option>").attr("value", defaultSymbol).text(defaultSymbol), $("<option>").attr("value", altSymbol).text(altSymbol)
+  )  );
+
+
+  $(inputsList).append($(nameInput), $(typeInput), $(symbolInput));
+
+  $(playerWindowDiv).append($(inputsList));
+
+  $("#controls-container").append($(playerWindowDiv));
+
+}
+
+//    Draws the title area, with board size and play count options.  Used on page load and each game restart.
+
+function populateTitleArea() {
+  var titleArea = $("<div>").attr("id", "title-area").append($("<h1>").text("TicTacToe"));
+
+  var timesSelect = $("<select>").attr("id", "num-times").attr("name", "num-times");
+  for(var i = 1; i <= 10; i++) {
+    var numOption = $("<option>").attr("value", i).text(i);
+    $(timesSelect).append($(numOption));
+  }
+
+  var boardSelect = $("<select>").attr("id", "board-size").attr("name", "board-size");
+  for(var j = 3; j <= 5; j++) {
+    var sizeOption = $("<option>").attr("value", j).text(j);
+    $(boardSelect).append($(sizeOption));
+  }
+
+  var playCount = $("<div>").attr("id", "play-count").append(
+    $("<h3>").text("Play to: "),
+    $(timesSelect),
+    $("<h3>").text("Board Size: "),
+    $(boardSelect)
+  );
+
+  var startButton = $("<button>").attr("id", "start-game").attr("type", "button").attr("name", "start-game").text("Start");
+
+  $(titleArea).append($(playCount), $(startButton));
+  $("#controls-container").append($(titleArea));
+
+}
 
 TicTacToeGame.prototype.drawGameBoard = function drawGameBoard() {
 
@@ -114,6 +195,11 @@ TicTacToeGame.prototype.drawPlayerName = function drawPlayerName(playerId) {
 };
 
 
+
+
+
+
+
 /*
 
 <div id="score-area">
@@ -135,6 +221,7 @@ TicTacToeGame.prototype.drawPlayerName = function drawPlayerName(playerId) {
       1111
     </div>
   </div>
+</div>
 </div>
 
 
