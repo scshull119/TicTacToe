@@ -79,7 +79,24 @@ TicTacToeGame.prototype.init = function init() {  // Creates and initializes all
   this.drawPlayerTurn();
 };
 
-TicTacToeGame.prototype.gameOver = function gameOver() {
+// Displays an overlay screen with a passed-in message.  Resets Game.  Button click clears overlay.
+
+TicTacToeGame.prototype.gameOver = function gameOver(message) {
+
+  var gameOverCurtain = $("<div>").attr("class", "curtain")
+  var curtainContent = $("<div>").attr("class", "curtain-content").append($("<h1>").attr("id", "curtain-message").text(message));
+  var restartButton = $("<button>").attr("id", "restart-button").attr("type", "button").attr("name", "restart-button").text("Play Again");
+  $(curtainContent).append($(restartButton));
+  $(gameOverCurtain).append($(curtainContent));
+  $("main").append($(gameOverCurtain));
+  $(".curtain-content").animate({"margin-top": "350px"}, 300, function() {
+    $(restartButton).fadeIn(400, function() {
+      $(restartButton).on("click", function() {
+        $(gameOverCurtain).remove();
+      })
+    })
+  });
+
   var element = $(this);
 
   $("#controls-container").empty();
@@ -92,6 +109,7 @@ TicTacToeGame.prototype.gameOver = function gameOver() {
   $('#start-game').on('click', function() {
     $(element)[0].init();
   });
+
 
 };
 
@@ -217,7 +235,7 @@ TicTacToeGame.prototype.drawPlayerTurn = function drawPlayerTurn() {
 
   $("#start-game").text("Stop Game").off();
   $("#start-game").on("click", function() {
-    $(element)[0].gameOver();
+    $(element)[0].gameOver("Game Over");
   });
 
   if(this.whosTurn == 1) {
