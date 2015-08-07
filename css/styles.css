@@ -107,7 +107,7 @@ height: 600px;
   font-family: 'Permanent Marker', cursive;
   font-size: 100px;
   width: 150px;
-  height: 150px;
+  /*height: 150px;*/
   background-color: black;
   text-align: center;
 }

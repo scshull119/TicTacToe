@@ -56,64 +56,66 @@ function TicTacToeGame() {
 TicTacToeGame.prototype.init = function init() {  // Creates and initializes all necessary child objects
   this.board = new Board(3);
   this.board.init();
-  this.board.drawGameBoard();
   this.player1 = new Player();
   this.player1.init('#first-player');
   this.player2 = new Player();
   this.player2.init('#second-player');
   var stringGoal = $('#num-times').val();
   this.goal = parseInt(stringGoal);
+
+  this.drawGameBoard();
+  this.drawScoreBoard();
 };
 
 
 // ------------------------------------- View Controller Section -----------------------------------
 
-Board.prototype.drawGameBoard = function drawGameBoard() {
+TicTacToeGame.prototype.drawGameBoard = function drawGameBoard() {
 
   var gameSquare = $("<div>").attr("id", "game-square");  // Square div holding square TicTacToe table
   var gameTable = $("<table>").attr("id", "game-table");   // Table object to function as gameboard outline
   $(gameTable).append($("<tbody>"));    // tbody to hold generated rows/columns
 
+  // Determine width and height of each cell...
+  var cellSize = 450 / this.board.squareDepth;
+
   // loop to generate row/column framework for table
 
-  for(var i = 1; i <= this.squareDepth; i++) {
+  for(var i = 1; i <= this.board.squareDepth; i++) {
     var tRow = $("<tr>");
-    for(var j = 1; j <= this.squareDepth; j++) {
-      var tCell = $("<td>").attr("id", i + "-" + j);
+    for(var j = 1; j <= this.board.squareDepth; j++) {
+      var tCell = $("<td>").attr("id", i + "-" + j).css({width: cellSize, height: cellSize});
       $(tRow).append($(tCell));
     }
     $(gameTable).append($(tRow));
   }
 
+  // Appending created table elements to the game square and, finally, to the chalk board
   $(gameSquare).append($(gameTable));
   $('#chalk-board').append($(gameSquare));
+};
 
+// Sets up the scoreboard area
+TicTacToeGame.prototype.drawScoreBoard = function drawScoreBoard() {
+  var scoreArea = $("<div>").attr("id", "score-area");
+  $("#chalk-board").append($(scoreArea));
+  this.drawPlayerName("player1");
+  this.drawPlayerName("player2");
+};
+
+// Function for writing the names of each player in the scoreboard area.
+TicTacToeGame.prototype.drawPlayerName = function drawPlayerName(playerId) {
+  var playerScore = $("<div>").attr("id", playerId).attr("class", "player-score");
+  var nameString = this[playerId].myName;
+  var playerName = $("<h3>").text(nameString);
+
+  $(playerScore).append($(playerName));
+  $("#score-area").append($(playerScore));
 };
 
 
 /*
 
-<div id="game-square">
-  <table id="game-table">
-    <tbody>
-      <tr>
-        <td>X</td>
-        <td>O</td>
-        <td></td>
-      </tr>
-      <tr>
-        <td>X</td>
-        <td></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-    </body>
-  </table>
-</div>
 <div id="score-area">
   <div id="player1" class="player-score">
     <h3>Lichard DeGray:</h3>
