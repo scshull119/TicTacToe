@@ -57,8 +57,11 @@ select {
   border-radius: 10px;
   display: inline-block;
   width: 30%;
+  height: 95px;
   font-family: 'Oswald', sans-serif;
   font-size: 12px;
+  vertical-align: top;
+  margin-top: 20px;
 }
 
 .player-window h2 {

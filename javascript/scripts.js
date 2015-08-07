@@ -76,6 +76,23 @@ TicTacToeGame.prototype.init = function init() {  // Creates and initializes all
 
   this.drawGameBoard();
   this.drawScoreBoard();
+  this.drawPlayerTurn();
+};
+
+TicTacToeGame.prototype.gameOver = function gameOver() {
+  var element = $(this);
+
+  $("#controls-container").empty();
+  $("#chalk-board").empty();
+
+  populatePlayerWindow("player1");
+  populateTitleArea();
+  populatePlayerWindow("player2");
+
+  $('#start-game').on('click', function() {
+    $(element)[0].init();
+  });
+
 };
 
 
@@ -193,6 +210,35 @@ TicTacToeGame.prototype.drawPlayerName = function drawPlayerName(playerId) {
   $(playerScore).append($(playerName));
   $("#score-area").append($(playerScore));
 };
+
+TicTacToeGame.prototype.drawPlayerTurn = function drawPlayerTurn() {
+
+  var element  = $(this);
+
+  $("#start-game").text("Stop Game").off();
+  $("#start-game").on("click", function() {
+    $(element)[0].gameOver();
+  });
+
+  if(this.whosTurn == 1) {
+    var activeDiv = $("#first-player");
+    var passiveDiv = $("#second-player");
+    var playerId = "player1";
+  } else if(this.whosTurn == 2) {
+    var activeDiv = $("second-player");
+    var passiveDiv = $("first-player");
+    var playerId = "player2";
+  }
+
+  $(activeDiv).empty();
+  $(activeDiv).append($("<h2>").text(this[playerId].myName + "'s Turn").css({"font-size": "32px"}));
+  $(activeDiv).css({"background-color": "#449944"});
+
+  $(passiveDiv).empty();
+  $(passiveDiv).css({"background-color": "#881010"});
+
+
+}
 
 
 
