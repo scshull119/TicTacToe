@@ -15,7 +15,8 @@ function init() {
 
 // Player object constructor function and prototype
 
-function Player() {
+function Player(parentScope) {
+  this.that = parentScope;
   this.myName = "";
   this.myType = "";
   this.mySymbol = "";
@@ -27,6 +28,63 @@ function Player() {
         this.myName = $(playerId + ' input').val();
         this.myType = $(playerId + ' .player-type').val();
         this.mySymbol = $(playerId + ' .player-symbol').val();
+      };
+
+      Player.prototype.didIWin = function didIWin() {
+        var sortedSquares = this.mySquares.sort(function(a, b){return a-b});
+        var boardSize = this.that.board.squareDepth;
+        var minCondition = 2;
+        var maxCondition = boardSize - 1;
+
+        numSquares = sortedSquares.length
+        if(numSquares >= boardSize) {
+
+          for(var i = numSquares - 1; i > 0; i--) {
+            var diffsArray = [];
+            var worksForConditions = [];
+            for(var j = i - 1 ; j >= 0; j--) {
+              diffsArray.push(sortedSquares[i] - sortedSquares[j]);
+            }
+
+            diffsArray = diffsArray.sort(function(a, b){return a-b});
+
+
+              // Section for evaluating the array of differences.
+
+              var diffsLength = diffsArray.length;
+
+
+
+              for(var z = minCondition; z <= maxCondition; z++) {
+
+                var worksForThisCondition = [];
+
+                for(var k = diffsLength - 1; k > 0; k--) {
+                  for(var l = k - 1; l >= 0; l--) {
+                    if(diffsArray[k] / diffsArray[l] == z) {
+                      worksForThisCondition.push(diffsArray[k]);
+                    }
+                  }
+                }
+                if(worksForThisCondition.length > 0) {
+                  worksForConditions.push(worksForThisCondition);
+                }
+
+              }
+
+              console.log(worksForConditions);
+
+              if(worksForConditions.length >= boardSize - 2) {
+                return true;
+              }
+
+          }
+
+          return false;
+
+        } else {
+          return false;   //  Returns false value (no win) if the player has not yet selected enough squares for a win.
+        }
       };
 
 
@@ -59,6 +117,8 @@ function Board() {
 // Game object constructor function and prototype
 
 function TicTacToeGame() {
+  this.that = this;
+
   this.board = {};
   this.clickedSquare = 0;
   this.player1 = {};
@@ -71,12 +131,14 @@ function TicTacToeGame() {
 TicTacToeGame.prototype.init = function init() {  // Creates and initializes all necessary child objects
   this.board = new Board();
   this.board.init();
-  this.player1 = new Player();
+  this.player1 = new Player(this.that);
   this.player1.init('#first-player');   // Argurment corresponds to div id of that player's control input area on page
-  this.player2 = new Player();
+  this.player2 = new Player(this.that);
   this.player2.init('#second-player');    // See above comment ---^
   var stringGoal = $('#num-times').val();
   this.goal = parseInt(stringGoal);
+
+  this.whosTurn = 1;
 
   this.drawGameBoard();
   this.drawScoreBoard();
@@ -85,19 +147,23 @@ TicTacToeGame.prototype.init = function init() {  // Creates and initializes all
 
 // Human players take their turns using this function, activated by a click in on of the game squares.
 TicTacToeGame.prototype.squareClicked = function squareClicked() {
-  console.log(this.clickedSquare);
   playerName = "player" + this.whosTurn;
   if(this[playerName].myType === "human") {     // Clicks will be disregarded if current player in NOT human.
 
     for(var i = 0; i < this.board.availableSquares.length; i++) {
       if(this.board.availableSquares[i] === this.clickedSquare) {
-        this[playerName].mySquares.push(this.board.availableSquares.splice(i, 1));
+        var noLongerAvailable = this.board.availableSquares.splice(i, 1);
+        this[playerName].mySquares.push(noLongerAvailable[0]);
       }
     }
 
     this.drawSymbol(this[playerName].mySymbol, this.clickedSquare);
 
-    // this[playerName].didIWin();
+    var win = this[playerName].didIWin();
+    if(win === true) {
+      console.log("This round won by " + this[playerName].myName + "!");
+    }
+
 
     if(this.whosTurn === 1) {
       this.whosTurn = 2;
