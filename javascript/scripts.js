@@ -19,6 +19,7 @@ function Player() {
   this.myName = "";
   this.myType = "";
   this.mySymbol = "";
+  this.mySquares = [];
   this.wins = 0;
 }
 
@@ -33,6 +34,7 @@ function Player() {
 
 function Board() {
   this.squareDepth = 3;
+  this.availableSquares = [];
 }
       // Based on the desired number of squares on a side, creates properties
       // on the Board object to hold the values of each square.
@@ -40,8 +42,9 @@ function Board() {
         this.getSquareDepth();
         for(var i = 1; i <= this.squareDepth; i++) {
           for(var j = 1; j <= this.squareDepth; j++) {
-            var varName = "row" + i + "col" + j;
-            this[varName] = "";
+            var varName = i.toString() + j.toString();
+            varName = parseInt(varName);
+            this.availableSquares.push(varName);
           }
         }
       };
@@ -57,6 +60,7 @@ function Board() {
 
 function TicTacToeGame() {
   this.board = {};
+  this.clickedSquare = 0;
   this.player1 = {};
   this.player2 = {};
   this.goal = 1;
@@ -65,12 +69,12 @@ function TicTacToeGame() {
 }
 
 TicTacToeGame.prototype.init = function init() {  // Creates and initializes all necessary child objects
-  this.board = new Board(3);
+  this.board = new Board();
   this.board.init();
   this.player1 = new Player();
-  this.player1.init('#first-player');
+  this.player1.init('#first-player');   // Argurment corresponds to div id of that player's control input area on page
   this.player2 = new Player();
-  this.player2.init('#second-player');
+  this.player2.init('#second-player');    // See above comment ---^
   var stringGoal = $('#num-times').val();
   this.goal = parseInt(stringGoal);
 
@@ -78,6 +82,10 @@ TicTacToeGame.prototype.init = function init() {  // Creates and initializes all
   this.drawScoreBoard();
   this.drawPlayerTurn();
 };
+
+TicTacToeGame.prototype.squareClicked = function squareClicked() {
+  console.log(this.clickedSquare);
+}
 
 // Displays an overlay screen with a passed-in message.  Resets Game.  Button click clears overlay.
 
@@ -188,6 +196,8 @@ function populateTitleArea() {
 
 TicTacToeGame.prototype.drawGameBoard = function drawGameBoard() {
 
+  var element = $(this);
+
   var gameSquare = $("<div>").attr("id", "game-square");  // Square div holding square TicTacToe table
   var gameTable = $("<table>").attr("id", "game-table");   // Table object to function as gameboard outline
   $(gameTable).append($("<tbody>"));    // tbody to hold generated rows/columns
@@ -200,7 +210,7 @@ TicTacToeGame.prototype.drawGameBoard = function drawGameBoard() {
   for(var i = 1; i <= this.board.squareDepth; i++) {
     var tRow = $("<tr>");
     for(var j = 1; j <= this.board.squareDepth; j++) {
-      var tCell = $("<td>").attr("id", i + "-" + j).css({width: cellSize, height: cellSize});
+      var tCell = $("<td>").attr("id", i.toString() + j.toString()).css({width: cellSize, height: cellSize});
       $(tRow).append($(tCell));
     }
     $(gameTable).append($(tRow));
@@ -209,6 +219,13 @@ TicTacToeGame.prototype.drawGameBoard = function drawGameBoard() {
   // Appending created table elements to the game square and, finally, to the chalk board
   $(gameSquare).append($(gameTable));
   $('#chalk-board').append($(gameSquare));
+
+  $("#game-table").on("click", function(e) {
+    var clickedSquare = parseInt(e.target.id);
+    $(element)[0].clickedSquare = clickedSquare;
+    $(element)[0].squareClicked();
+  });
+
 };
 
 // Sets up the scoreboard area
