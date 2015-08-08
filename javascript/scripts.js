@@ -83,12 +83,43 @@ TicTacToeGame.prototype.init = function init() {  // Creates and initializes all
   this.drawPlayerTurn();
 };
 
+// Human players take their turns using this function, activated by a click in on of the game squares.
 TicTacToeGame.prototype.squareClicked = function squareClicked() {
   console.log(this.clickedSquare);
-}
+  playerName = "player" + this.whosTurn;
+  if(this[playerName].myType === "human") {     // Clicks will be disregarded if current player in NOT human.
 
-// Displays an overlay screen with a passed-in message.  Resets Game.  Button click clears overlay.
+    for(var i = 0; i < this.board.availableSquares.length; i++) {
+      if(this.board.availableSquares[i] === this.clickedSquare) {
+        this[playerName].mySquares.push(this.board.availableSquares.splice(i, 1));
+      }
+    }
 
+    this.drawSymbol(this[playerName].mySymbol, this.clickedSquare);
+
+    // this[playerName].didIWin();
+
+    if(this.whosTurn === 1) {
+      this.whosTurn = 2;
+    } else {
+      this.whosTurn = 1;
+    }
+
+    this.nextTurn();
+  }
+};
+
+TicTacToeGame.prototype.nextTurn = function nextTurn() {
+  this.drawPlayerTurn();
+  playerName = "player" + this.whosTurn;
+
+  if(this[playerName].myType === "computer") {
+    console.log("Now the computer goes...");
+    // this.computerTurn();
+  }
+};
+
+// Displays an overlay "curtain" screen with animated passed-in message.  Resets Game.  Button click clears overlay.
 TicTacToeGame.prototype.gameOver = function gameOver(message) {
 
   var gameOverCurtain = $("<div>").attr("class", "curtain")
@@ -117,15 +148,12 @@ TicTacToeGame.prototype.gameOver = function gameOver(message) {
   $('#start-game').on('click', function() {
     $(element)[0].init();
   });
-
-
 };
 
 
 // ------------------------------------- View Controller Section -----------------------------------
 
 // Draws a player control menu.  For use when page is first loaded, and on each game restart.
-
 function populatePlayerWindow(playerId) {
   if(playerId == "player1") {
     var divId = "first-player";
@@ -164,7 +192,6 @@ function populatePlayerWindow(playerId) {
 }
 
 //    Draws the title area, with board size and play count options.  Used on page load and each game restart.
-
 function populateTitleArea() {
   var titleArea = $("<div>").attr("id", "title-area").append($("<h1>").text("TicTacToe"));
 
@@ -194,6 +221,7 @@ function populateTitleArea() {
 
 }
 
+// Draws the TicTacToe game board and binds an event listener to listen for clicks on the squares.
 TicTacToeGame.prototype.drawGameBoard = function drawGameBoard() {
 
   var element = $(this);
@@ -202,15 +230,16 @@ TicTacToeGame.prototype.drawGameBoard = function drawGameBoard() {
   var gameTable = $("<table>").attr("id", "game-table");   // Table object to function as gameboard outline
   $(gameTable).append($("<tbody>"));    // tbody to hold generated rows/columns
 
-  // Determine width and height of each cell...
+  // Determine width and height of each cell... And the font size of the symbols to be drawn in each cell.
   var cellSize = 450 / this.board.squareDepth;
+  var fontSize = Math.floor(cellSize * .6666);
 
   // loop to generate row/column framework for table
 
   for(var i = 1; i <= this.board.squareDepth; i++) {
     var tRow = $("<tr>");
     for(var j = 1; j <= this.board.squareDepth; j++) {
-      var tCell = $("<td>").attr("id", i.toString() + j.toString()).css({width: cellSize, height: cellSize});
+      var tCell = $("<td>").attr("id", i.toString() + j.toString()).css({width: cellSize, height: cellSize, fontSize: fontSize});
       $(tRow).append($(tCell));
     }
     $(gameTable).append($(tRow));
@@ -246,6 +275,7 @@ TicTacToeGame.prototype.drawPlayerName = function drawPlayerName(playerId) {
   $("#score-area").append($(playerScore));
 };
 
+// Handles changes of appearance to the player menu boxes to indicate who's turn it currently is.
 TicTacToeGame.prototype.drawPlayerTurn = function drawPlayerTurn() {
 
   var element  = $(this);
@@ -260,8 +290,8 @@ TicTacToeGame.prototype.drawPlayerTurn = function drawPlayerTurn() {
     var passiveDiv = $("#second-player");
     var playerId = "player1";
   } else if(this.whosTurn == 2) {
-    var activeDiv = $("second-player");
-    var passiveDiv = $("first-player");
+    var activeDiv = $("#second-player");
+    var passiveDiv = $("#first-player");
     var playerId = "player2";
   }
 
@@ -271,9 +301,13 @@ TicTacToeGame.prototype.drawPlayerTurn = function drawPlayerTurn() {
 
   $(passiveDiv).empty();
   $(passiveDiv).css({"background-color": "#881010"});
-
-
 }
+
+// Based on passed-in values for symbol and box number, draws a symbol in a box on the game board.
+TicTacToeGame.prototype.drawSymbol = function drawSymbol(symbol, square) {
+  var idName = "#" + square;
+  $(idName).text(symbol);
+};
 
 
 
