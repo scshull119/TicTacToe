@@ -170,7 +170,7 @@ height: 600px;
 
 .tally {
   left: 40px;
-  background-image: url('../sprite.png');
+  /* background-image: url('../sprite.png'); */
   height: 70px;
   width: 120px;
   overflow: hidden;
@@ -214,4 +214,17 @@ footer {
   padding: 5px;
   border-radius: 5px;
   border: 3px solid black;
+}
+
+.announcement {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0,0,0,1);
+  color: white;
+  font-size: 80px;
+  font-family: 'Permanent Marker', cursive;
+  text-align: center;
 }
