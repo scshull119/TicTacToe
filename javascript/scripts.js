@@ -177,9 +177,10 @@ TicTacToeGame.prototype.squareClicked = function squareClicked() {
     } else if(draw === true) {
       console.log("Draw game. No winner.");
       this.announce("Draw game. No winner.");
+      return false;
+    } else {
+      this.nextTurn();
     }
-
-    this.nextTurn();
   }
 };
 
@@ -239,8 +240,10 @@ TicTacToeGame.prototype.computerTurn = function computerTurn() {
 };
 
 TicTacToeGame.prototype.isDrawGame = function isDrawGame() {
-  if(this.availableSquares === 0) {
+  if(this.board.availableSquares.length === 0) {
     return true;
+  } else {
+    return false;
   }
 };
 
