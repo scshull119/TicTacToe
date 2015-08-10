@@ -32,51 +32,60 @@ function Player(parentScope) {
         this.mySymbol = $(playerId + ' .player-symbol').val();
       };
 
+/* Winner logic is based on evaluating the ratios of the differences between square ID numbers, where each square
+has an ID formed by concatenating its row number with its column number, eg. row 1 column 1 becomes square ID 11,
+row 3 column 2 is 32, etc.  In order to win, a requiste number of squares (3, 4, or 5 in this game) must have like
+differences when subtracted from each other.  A crosswise win will have differnces in mulipiples of 1, a vertical win differs
+in multiples of 10, and diagonal win differs in multiples of 9 or 11, depending on the direction. */
+
       Player.prototype.didIWin = function didIWin() {
-        var sortedSquares = this.mySquares.sort(function(a, b){return a-b});
+        var sortedSquares = this.mySquares.sort(function(a, b){return a-b});  // Sorts the squares in order so subraction can be tested from larges to smallest
         var boardSize = this.that.board.squareDepth;
+
+        // When two smaller winning squares are each subtracted individually from the larges winning square, their differences must differ by a factor of 2.
+        // This is the only condition for a win on a 3x3 board, where only 3 squares are needed for a win and therefore only two differnces.
         var minCondition = 2;
+        // On larger boards where more squares (and therefore more differences) are required, factors up to one less than the number of squares
+        // on one side of the board must be tested.
         var maxCondition = boardSize - 1;
 
         numSquares = sortedSquares.length
         if(numSquares >= boardSize) {
 
           for(var i = numSquares - 1; i > 0; i--) {
-            var diffsArray = [];
+            var diffsArray = [];   // Differences placed in an array
             var worksForConditions = [];
             for(var j = i - 1 ; j >= 0; j--) {
               diffsArray.push(sortedSquares[i] - sortedSquares[j]);
             }
 
-            diffsArray = diffsArray.sort(function(a, b){return a-b});
+            diffsArray = diffsArray.sort(function(a, b){return a-b}); // Differences array sorted so evaluation can procede larges to smallest
 
 
               // Section for evaluating the array of differences.
 
               var diffsLength = diffsArray.length;
 
+              for(var z = minCondition; z <= maxCondition; z++) {     // For loop testing each of the necessary conditions (see above)
 
-
-              for(var z = minCondition; z <= maxCondition; z++) {
-
-                var worksForThisCondition = [];
+                var worksForThisCondition = [];   // For each condition tested, an array is generated of diffs that work for that condition
 
                 for(var k = diffsLength - 1; k > 0; k--) {
                   for(var l = k - 1; l >= 0; l--) {
                     if(diffsArray[k] / diffsArray[l] == z) {
-                      worksForThisCondition.push(diffsArray[k]);
-                    }
+                      worksForThisCondition.push(diffsArray[k]);    // Differences that pass the test for a given factor (ie their quotients when divided by 2, 3, or 4 are also present in the differences array)
+                    }                                               // are pushed to an array for the specific quotient they work for.
                   }
                 }
                 if(worksForThisCondition.length > 0) {
-                  worksForConditions.push(worksForThisCondition);
+                  worksForConditions.push(worksForThisCondition);   // Each array of working differences is pushed into an outer array
                 }
 
               }
 
               console.log(worksForConditions);
 
-              if(worksForConditions.length >= boardSize - 2) {
+              if(worksForConditions.length >= boardSize - 2) {  // The lenghth of the "worksForConditions" array tells us how many conditions were passed, and therefor whether a win occured.
                 this.wins++;
                 this.drawTally();
                 return true;
@@ -151,13 +160,13 @@ TicTacToeGame.prototype.init = function init() {  // Creates and initializes all
   this.drawScoreBoard();
   this.drawPlayerTurn();
 
-  this.letComputerStart();
+  this.letComputerStart();      // Allows the computer to make the first move it is assigned as player1
 };
 
-// Human players take their turns using this function, activated by a click in on of the game squares.
+// Human players take their turns using this function, activated by a click on of the game squares.
 TicTacToeGame.prototype.squareClicked = function squareClicked() {
   playerName = "player" + this.whosTurn;
-  if(this[playerName].myType === "human") {     // Clicks will be disregarded if current player in NOT human.
+  if(this[playerName].myType === "human") {     // Clicks will be disregarded if current player is NOT human.
 
     for(var i = 0; i < this.board.availableSquares.length; i++) {
       if(this.board.availableSquares[i] === this.clickedSquare) {
@@ -170,8 +179,14 @@ TicTacToeGame.prototype.squareClicked = function squareClicked() {
         var win = this[playerName].didIWin();
         var draw = this.isDrawGame();
         if(win === true) {
+
+          if(this[playerName].wins >= this.goal) {
+            this.gameOver(this[playerName].myName + " was the first to win " + this.goal + "!");
+            return true;
+          }
+
           console.log("This round won by " + this[playerName].myName + "!");
-          this.announce("This round won by" + this[playerName].myName + "!");
+          this.announce("This round won by " + this[playerName].myName + "!");
           this.nextRound();
           return true;
         } else if(draw === true) {
@@ -233,6 +248,12 @@ TicTacToeGame.prototype.computerTurn = function computerTurn() {
     var win = element[playerName].didIWin();
     var draw = element.isDrawGame();
     if(win === true) {
+
+      if(element[playerName].wins >= element.goal) {
+        element.gameOver(element[playerName].myName + " was the first to win " + element.goal + "!");
+        return true;
+      }
+
       console.log("This round won by " + element[playerName].myName + "!");
       element.announce("This round won by " + element[playerName].myName + "!");
       element.nextRound();
@@ -244,9 +265,9 @@ TicTacToeGame.prototype.computerTurn = function computerTurn() {
       return false;
     }
 
-    setTimeout(function() {
+    // setTimeout(function() {
       element.nextTurn();
-    }, 3000);
+    // }, 1000);
 
   }, 3500);
 
@@ -573,43 +594,6 @@ Player.prototype.drawTally = function drawTally() {
   }
 
 };
-
-
-
-
-
-
-
-/*
-
-<div id="score-area">
-  <div id="player1" class="player-score">
-    <h3>Lichard DeGray:</h3>
-    <div class="tally upper">
-      1111
-    </div>
-    <div class="tally lower">
-      1111
-    </div>
-  </div>
-  <div id="player2" class="player-score">
-    <h3>Player 2:</h3>
-    <div class="tally upper">
-      1111
-    </div>
-    <div class="tally lower">
-      1111
-    </div>
-  </div>
-</div>
-</div>
-
-
-
-*/
-
-
-
 
 
 $(document).ready(function() {
