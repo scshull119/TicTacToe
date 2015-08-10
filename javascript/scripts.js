@@ -112,7 +112,7 @@ function Board() {
       };
 
       // Function reads the user's selection of a board size, allowing 4x4 and 5x5 boards in addition to default 3x3.
-      // Winner logic should work for board sizes up to 10x10, and should be easily adaptable to 100x100, 1000x1000, etc,
+      // Winner logic should work for board sizes up to 9x9, and should be easily adaptable to 99x99, 999x999, etc,
       // by multipying base square ids by a factor of 10.  (eg 1001, 1002, 1003... instead of 11, 12, 13...)
       // User interface only gives options for 3x3, 4x4, and 5x5 however.
       Board.prototype.getSquareDepth = function getSquareDepth() {
@@ -163,23 +163,26 @@ TicTacToeGame.prototype.squareClicked = function squareClicked() {
       if(this.board.availableSquares[i] === this.clickedSquare) {
         var noLongerAvailable = this.board.availableSquares.splice(i, 1);
         this[playerName].mySquares.push(noLongerAvailable[0]);
+        console.log(playerName + "'s squares: " + this[playerName].mySquares);
+
+        this.drawSymbol(this[playerName].mySymbol, this.clickedSquare);
+
+        var win = this[playerName].didIWin();
+        var draw = this.isDrawGame();
+        if(win === true) {
+          console.log("This round won by " + this[playerName].myName + "!");
+          this.announce("This round won by" + this[playerName].myName + "!");
+          this.nextRound();
+          return true;
+        } else if(draw === true) {
+          console.log("Draw game. No winner.");
+          this.announce("Draw game. No winner.");
+          this.nextRound();
+          return false;
+        } else {
+          this.nextTurn();
+        }
       }
-    }
-
-    this.drawSymbol(this[playerName].mySymbol, this.clickedSquare);
-
-    var win = this[playerName].didIWin();
-    var draw = this.isDrawGame();
-    if(win === true) {
-      console.log("This round won by " + this[playerName].myName + "!");
-      this.announce("This round won by" + this[playerName].myName + "!");
-      return true;
-    } else if(draw === true) {
-      console.log("Draw game. No winner.");
-      this.announce("Draw game. No winner.");
-      return false;
-    } else {
-      this.nextTurn();
     }
   }
 };
@@ -211,10 +214,14 @@ TicTacToeGame.prototype.letComputerStart = function letComputerStart() {
 TicTacToeGame.prototype.computerTurn = function computerTurn() {
   playerName = "player" + this.whosTurn;
 
+
+
   var numOptions = this.board.availableSquares.length;
   var randomIndex = Math.floor(Math.random() * numOptions);
   var noLongerAvailable = this.board.availableSquares.splice(randomIndex, 1);
   this[playerName].mySquares.push(noLongerAvailable[0]);
+
+  console.log(playerName + "'s squares: " + this[playerName].mySquares);
 
   var element = this;
 
@@ -222,20 +229,28 @@ TicTacToeGame.prototype.computerTurn = function computerTurn() {
     element.drawComputerSymbol(element[playerName].mySymbol, noLongerAvailable[0]);
   }, 2000);
 
-  var win = this[playerName].didIWin();
-  var draw = this.isDrawGame();
-  if(win === true) {
-    console.log("This round won by " + this[playerName].myName + "!");
-    this.announce("This round won by" + this[playerName].myName + "!");
-    return true;
-  } else if(draw === true) {
-    console.log("Draw game. No winner.");
-    this.announce("Draw game. No winner.");
-  }
-
   setTimeout(function() {
-    element.nextTurn();
-  }, 3000);
+    var win = element[playerName].didIWin();
+    var draw = element.isDrawGame();
+    if(win === true) {
+      console.log("This round won by " + element[playerName].myName + "!");
+      element.announce("This round won by " + element[playerName].myName + "!");
+      element.nextRound();
+      return true;
+    } else if(draw === true) {
+      console.log("Draw game. No winner.");
+      element.announce("Draw game. No winner.");
+      element.nextRound();
+      return false;
+    }
+
+    setTimeout(function() {
+      element.nextTurn();
+    }, 3000);
+
+  }, 3500);
+
+
 
 };
 
@@ -249,6 +264,12 @@ TicTacToeGame.prototype.isDrawGame = function isDrawGame() {
 
 TicTacToeGame.prototype.nextRound = function nextRound() {
   console.log("Time for the next round!");
+  this.board.availableSquares = [];
+  this.refreshGameBoard();
+  this.board.init();
+  this.player1.mySquares = [];
+  this.player2.mySquares = [];
+  this.nextTurn();
 };
 
 // Displays an overlay "curtain" screen with animated passed-in message.  Resets Game.  Button click clears overlay.
@@ -389,6 +410,39 @@ TicTacToeGame.prototype.drawGameBoard = function drawGameBoard() {
 
 };
 
+TicTacToeGame.prototype.refreshGameBoard = function refreshGameBoard() {
+  var element = $(this);
+
+  $("#game-table").remove();
+
+  var gameTable = $("<table>").attr("id", "game-table");   // Table object to function as gameboard outline
+  $(gameTable).append($("<tbody>"));    // tbody to hold generated rows/columns
+
+  // Determine width and height of each cell... And the font size of the symbols to be drawn in each cell.
+  var cellSize = 450 / this.board.squareDepth;
+  var fontSize = Math.floor(cellSize * .6666);
+
+  // loop to generate row/column framework for table
+
+  for(var i = 1; i <= this.board.squareDepth; i++) {
+    var tRow = $("<tr>");
+    for(var j = 1; j <= this.board.squareDepth; j++) {
+      var tCell = $("<td>").attr("id", i.toString() + j.toString()).css({width: cellSize, height: cellSize, fontSize: fontSize});
+      $(tRow).append($(tCell));
+    }
+    $(gameTable).append($(tRow));
+  }
+
+  // Appending created table elements to the game square and, finally, to the chalk board
+  $("#game-square").append($(gameTable));
+
+  $("#game-table").on("click", function(e) {
+    var clickedSquare = parseInt(e.target.id);
+    $(element)[0].clickedSquare = clickedSquare;
+    $(element)[0].squareClicked();
+  });
+};
+
 // Sets up the scoreboard area
 TicTacToeGame.prototype.drawScoreBoard = function drawScoreBoard() {
   var scoreArea = $("<div>").attr("id", "score-area");
@@ -401,8 +455,8 @@ TicTacToeGame.prototype.drawScoreBoard = function drawScoreBoard() {
 TicTacToeGame.prototype.drawPlayerName = function drawPlayerName(playerId) {
   var playerScore = $("<div>").attr("id", playerId).attr("class", "player-score");
   var nameString = this[playerId].myName;
-  var upperBox = $("<div>").attr("class", "tally upper");
-  var lowerBox = $("<div>").attr("class", "tally lower");
+  var upperBox = $("<div>").attr("class", "tally upper").append("<span>");
+  var lowerBox = $("<div>").attr("class", "tally lower").append("<span>");
   var playerName = $("<h3>").text(nameString);
 
   $(playerScore).append($(playerName)).append($(upperBox)).append($(lowerBox));
@@ -496,7 +550,7 @@ Player.prototype.drawTally = function drawTally() {
     upperBoxString += "1";
   }
 
-  for(var j = 0; j < lowerBoxTicks; i++) {
+  for(var j = 0; j < lowerBoxTicks; j++) {
     lowerBoxString += "1";
   }
 
@@ -505,8 +559,18 @@ Player.prototype.drawTally = function drawTally() {
   var selector = "#" + this.playerId;
   console.log(selector);
 
-  $(selector).children().eq(1).text(upperBoxString);
-  $(selector).children().eq(2).text(lowerBoxString);
+
+
+  $(selector).children().eq(1).children().eq(0).text(upperBoxString);
+  $(selector).children().eq(2).children().eq(0).text(lowerBoxString);
+
+  if(upperBR === true) {
+    $(selector).children().eq(1).css({"background-image": "url('sprite.png')"});
+  }
+
+  if(lowerBR === true) {
+    $(selector).children().eq(2).css({"background-image": "url('sprite.png')"});
+  }
 
 };
 

@@ -176,7 +176,11 @@ height: 600px;
   overflow: hidden;
   font-size: 64px;
   line-height: 64px;
-  text-align: center;
+  text-align: left;
+}
+
+.tally span {
+  padding-left: 20px;
 }
 
 footer {
